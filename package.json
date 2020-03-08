@@ -1,0 +1,32 @@
+{
+    "name": "local-trust-chain",
+    "version": "0.0.1",
+    "description": "Generate local SSL/TLS certificates for local SSL development",
+    "main": "dist/index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "lint": "npx eslint --cache src/**/*.ts",
+        "build": "rimraf dist && tsc",
+        "prepublishOnly": "build"
+    },
+    "author": "Marten Schälicke",
+    "license": "MIT",
+    "keywords": [
+        "ssl",
+        "certificate",
+        "trust"
+    ],
+    "devDependencies": {
+        "@types/node-forge": "^0.9.2",
+        "@typescript-eslint/eslint-plugin": "^2.22.0",
+        "@typescript-eslint/parser": "^2.22.0",
+        "eslint": "^6.8.0",
+        "husky": "^4.2.3",
+        "lint-staged": "^10.0.8",
+        "typescript": "^3.8.3"
+    },
+    "dependencies": {
+        "internal-ip": "^5.0.0",
+        "node-forge": "^0.9.1"
+    }
+}
