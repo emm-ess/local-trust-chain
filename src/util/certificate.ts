@@ -1,5 +1,6 @@
 import {pki, md} from 'node-forge'
 import {randomSerialNumber} from './files'
+import {ltcCertOptions} from '../types'
 
 export function isCertificateValid({validity}: pki.Certificate): boolean{
     // TODO:

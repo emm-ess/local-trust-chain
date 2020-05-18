@@ -23,24 +23,24 @@ const DEFAULT_OPTIONS: ltcOptions = {
     ca: {
         filename: 'local-ca',
         keySize: 2048,
-        validity: 720,
+        validity: 730,
         saveToDisc: true,
     },
     cert: {
         filename: 'local',
         keySize: 2048,
-        validity: 720,
+        validity: 730,
     },
 }
 
 const ATTRS_CA = [
-    {shortName: 'O', value: USER_NAME},
+    {shortName: 'O', value: `${USER_NAME} organization`},
     {shortName: 'OU', value: USER_NAME},
-    {shortName: 'CN', value: `${USER_NAME} local-ca`},
+    {shortName: 'CN', value: `${USER_NAME}-local-ca`},
 ]
 
 const ATTRS_CERT = [
-    {shortName: 'O', value: `${USER_NAME} local-dev`},
+    {shortName: 'O', value: `${USER_NAME}-local-dev`},
     {shortName: 'OU', value: USER_NAME},
 ]
 
@@ -107,13 +107,13 @@ class LocalTrustChain {
     }
 
     private get newCaCertificateNeeded(): boolean{
-        return !(this.caCrt || isCertificateValid(this.caCrt))
+        return !(this.caCrt && isCertificateValid(this.caCrt))
     }
 
     private get newLocalCertificateNeeded(): boolean{
         // TODO:
         // . check subjectAltName
-        return !(this.certCrt || isCertificateValid(this.certCrt))
+        return !(this.certCrt && isCertificateValid(this.certCrt))
     }
 
     private createCaCertificate(): void{
@@ -170,14 +170,14 @@ class LocalTrustChain {
         ca: pki.PEM
         }{
         return {
-            key: pki.certificateToPem(this.certCrt),
-            cert: pki.privateKeyToPem(this.certKey),
+            cert: pki.certificateToPem(this.certCrt),
+            key: pki.privateKeyToPem(this.certKey),
             ca: pki.certificateToPem(this.caCrt),
         }
     }
 }
 
-export default function init(options?: Partial<ltcOptions>){
+export function init(options?: Partial<ltcOptions>){
     const {pem} = new LocalTrustChain(options)
     return pem
 }
