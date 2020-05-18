@@ -1,7 +1,7 @@
 # Local Trust Chain
 DO NOT USE THIS IN PRODUCTION (it's not tested at all at the moment and it aim's development only - so security isn't a priority)!
 
-Anyway. This is a small script generating a local certificate with the current local ip of your device as subjectAltName by - signed a local "root" certificate. Useful if you need a valid SSL-Certificate for your development-machine but have to access it from another machine. Having this in mind, the "root" certificate is saved on disk and thus can be added to your keychains.
+Anyway. This is a small script generating a local certificate with the current local ip of your device as subjectAltName - signed by a local "root" certificate. Useful if you need a valid SSL-Certificate for your development-machine but have to access it from another machine. Having this in mind, the "root" certificate is saved on disk and thus can be added to your keychains.
 
 ## Usage
 ```javascript
