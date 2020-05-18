@@ -16,39 +16,38 @@ module.exports = {
     rules: {
         'indent': ['error', 4, {
             // 0 would be nicer but somehow eslint is not working with that
-            SwitchCase: 1
+            SwitchCase: 1,
         }],
         'brace-style': ['error', 'stroustrup', {
-            allowSingleLine: true
+            allowSingleLine: true,
         }],
         'space-before-blocks': ['error', {
             functions: 'never',
             keywords: 'always',
-            classes: 'always'
+            classes: 'always',
         }],
         'space-before-function-paren': ['error', {
             anonymous: 'never',
             named: 'never',
-            asyncArrow: 'always'
+            asyncArrow: 'always',
         }],
         'no-multiple-empty-lines': ['error', {
             max: 3,
             maxEOF: 3, // due to vue sfc
-            maxBOF: 0
+            maxBOF: 0,
         }],
         'no-multi-spaces': ['error', {
             exceptions: {
                 VariableDeclarator: true,
-                ImportDeclaration: true
-            }
+                ImportDeclaration: true,
+            },
         }],
         'comma-dangle': ['error', 'always-multiline'],
         'key-spacing': ['error', {
-            mode: 'minimum'
+            mode: 'minimum',
         }],
-        'space-in-brackets': ['error', 'never'],
-        'object-curly-spacing': ['off'],
         'space-in-brackets': ['off'],
+        'object-curly-spacing': ['off'],
         'object-property-newline': ['error', {
             allowAllPropertiesOnSameLine: true,
         }],
@@ -62,7 +61,7 @@ module.exports = {
         '@typescript-eslint/no-use-before-define': 'off',
         '@typescript-eslint/member-delimiter-style': ['error', {
             multiline: {delimiter: 'none'},
-            singleline: {delimiter: 'comma'}
+            singleline: {delimiter: 'comma'},
         }],
         '@typescript-eslint/no-inferrable-types': ['error', {
             ignoreParameters: true,
