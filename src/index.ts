@@ -1,40 +1,20 @@
-import fs from 'fs'
-import Path from 'path'
 import {userInfo, homedir} from 'os'
 
-import {pki, util, random, md} from 'node-forge'
+import {pki} from 'node-forge'
 import internalIp from 'internal-ip'
 
+import {
+    getPaths,
+    loadCertificate,
+    saveCertificate,
+    loadPrivateKey,
+    savePrivateKey,
+    isCertificateValid,
+    createCertificate,
+} from './util'
 
+import {ltcOptions} from './types'
 
-type ltcCertOptions = {
-    subject: pki.CertificateField[]
-    issuer: pki.CertificateField[]
-    keySize: 2048 | 4096
-    signingKey?: pki.PrivateKey
-    validity: number
-    extensions: any[]
-}
-
-type ltcOptions = {
-    path: string
-    ca: {
-        filename: string
-        keySize: ltcCertOptions['keySize']
-        validity: ltcCertOptions['validity']
-        saveToDisc: boolean
-        passphrase?: string
-    }
-    cert: {
-        filename: string
-        keySize: ltcCertOptions['keySize']
-        validity: ltcCertOptions['validity']
-    }
-}
-
-
-const EXT_CERT = '.crt'
-const EXT_KEY = '.key'
 
 const USER_NAME = userInfo().username
 
@@ -93,106 +73,10 @@ const EXTENSIONS_CERT = [
     },
 ]
 
-function createDirectory(path: Path.ParsedPath){
-    if (!fs.existsSync(path.dir)) {
-        fs.mkdirSync(path.dir, {recursive: true})
-    }
-}
-
-function savePrivateKey(path: Path.ParsedPath, privateKey: pki.PrivateKey, passphrase?: string): void{
-    const pem = passphrase
-        ? pki.encryptRsaPrivateKey(privateKey, passphrase)
-        : pki.privateKeyToPem(privateKey)
-    createDirectory(path)
-    fs.writeFileSync(Path.format(path), pem, {encoding: 'utf8'})
-}
-function loadPrivateKey(path: Path.ParsedPath, passphrase?: string): pki.PrivateKey | undefined{
-    const filePath = Path.format(path)
-    if (!fs.existsSync(filePath)) {
-        return
-    }
-    const pem = fs.readFileSync(filePath, {encoding: 'utf8'})
-    return passphrase
-        ? pki.decryptRsaPrivateKey(pem, passphrase)
-        : pki.privateKeyFromPem(pem)
-}
-
-function saveCertificate(path: Path.ParsedPath, cert: pki.Certificate): void{
-    const pem = pki.certificateToPem(cert)
-    createDirectory(path)
-    fs.writeFileSync(Path.format(path), pem, {encoding: 'utf8'})
-}
-function loadCertificate(path: Path.ParsedPath): pki.Certificate | undefined{
-    const filePath = Path.format(path)
-    if (!fs.existsSync(filePath)) {
-        return
-    }
-    const pem = fs.readFileSync(filePath, {encoding: 'utf8'})
-    return pki.certificateFromPem(pem)
-}
-
-function randomSerialNumber(){
-    const hexString = util.bytesToHex(random.getBytesSync(16))
-    let mostSiginficativeHexAsInt = parseInt(hexString[0], 16)
-    if (mostSiginficativeHexAsInt < 8) {
-        return hexString
-    }
-
-    mostSiginficativeHexAsInt -= 8
-    return mostSiginficativeHexAsInt.toString() + hexString.substring(1)
-}
-
 function getOptions(options: Partial<ltcOptions>): ltcOptions{
     const result = {...DEFAULT_OPTIONS, ...options}
     result.ca = {...DEFAULT_OPTIONS.ca, ...result.ca}
-    if (!result.path.endsWith('/')) {
-        result.path += '/'
-    }
     return result
-}
-function getPaths(settings: ltcOptions){
-    const ca = `${settings.path}${settings.ca.filename}`
-    const cert = `${settings.path}${settings.ca.filename}`
-    return {
-        caCrt: Path.parse(`${ca}${EXT_CERT}`),
-        caKey: Path.parse(`${ca}${EXT_KEY}`),
-        certCrt: Path.parse(`${cert}${EXT_CERT}`),
-        certKey: Path.parse(`${cert}${EXT_KEY}`),
-    }
-}
-
-function isCertificateValid({validity}: pki.Certificate): boolean{
-    // TODO:
-    // . check if maybe new validity duration setting invalidates certificate
-    const now = new Date()
-    now.setHours(0)
-    now.setMinutes(0)
-    now.setSeconds(0)
-    now.setMilliseconds(0)
-    return validity.notBefore <= now && now <= validity.notAfter
-}
-
-function createCertificate(options: ltcCertOptions): {
-    cert: pki.Certificate
-    keys: pki.KeyPair
-}{
-    const keys = pki.rsa.generateKeyPair(options.keySize)
-    const cert = pki.createCertificate()
-    cert.publicKey = keys.publicKey
-    cert.serialNumber = randomSerialNumber()
-
-    cert.validity.notBefore = new Date()
-    cert.validity.notAfter = new Date()
-    cert.validity.notAfter.setDate(cert.validity.notAfter.getDate() + options.validity)
-
-    cert.setSubject(options.subject)
-    cert.setIssuer(options.issuer)
-    cert.setExtensions(options.extensions)
-
-    const signingKey = options.signingKey || keys.privateKey
-    cert.sign(signingKey, md.sha256.create())
-
-    return {cert, keys}
 }
 
 class LocalTrustChain {
