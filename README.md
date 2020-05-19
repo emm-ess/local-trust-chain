@@ -5,14 +5,14 @@ Anyway. This is a small script generating a local certificate with the current l
 
 ## Usage
 ```javascript
-const ltc = require('local-trust-chain');
+const LocalTrustChain = require('local-trust-chain');
 
 const ltcOptions = {};
 
 module.exports = {
     devServer: {
         open: true,
-        https: ltc.init(ltcOptions),
+        https: LocalTrustChain(ltcOptions),
     },
 }
 ```
@@ -46,7 +46,7 @@ const options = {
 ```
 
 ## ToDos
-[] ability to define a root certificate (making your local "root" an intermediate certificate)
-[] option for writing certificate to disc
-[] write tests
-[] check passed options
+- [ ] ability to define a root certificate (making your local "root" an intermediate certificate)
+- [ ] option for writing certificate to disc
+- [ ] write tests
+- [ ] check passed options

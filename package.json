@@ -1,23 +1,26 @@
 {
     "name": "local-trust-chain",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Generate SSL/TLS certificates for local SSL development",
     "main": "dist/index.js",
+    "files": [
+        "dist/"
+    ],
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "lint": "npx eslint --cache src/**/*.ts",
-        "build": "rimraf dist && tsc"
+        "prebuild": "rimraf dist",
+        "build": "tsc"
     },
-    "author": "Marten Schälicke",
+    "author": {
+        "name": "Marten Schälicke",
+        "email": "hallo@emm-ess.de",
+        "url": "https://emm-ess.de"
+    },
     "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/emm-ess/local-trust-chain.git"
-    },
-    "bugs": {
-        "url": "https://github.com/emm-ess/local-trust-chain/issues"
-    },
-    "homepage": "https://github.com/emm-ess/local-trust-chain#readme",
+    "repository": "github:emm-ess/local-trust-chain",
+    "homepage": "https://github.com/emm-ess/local-trust-chain",
+    "bugs": "https://github.com/emm-ess/local-trust-chain/issues",
     "keywords": [
         "ssl",
         "certificate",
@@ -25,11 +28,11 @@
     ],
     "devDependencies": {
         "@types/node-forge": "^0.9.3",
-        "@typescript-eslint/eslint-plugin": "^2.33.0",
-        "@typescript-eslint/parser": "^2.33.0",
+        "@typescript-eslint/eslint-plugin": "^2.34.0",
+        "@typescript-eslint/parser": "^2.34.0",
         "eslint": "^7.0.0",
         "husky": "^4.2.5",
-        "lint-staged": "^10.2.3",
+        "lint-staged": "^10.2.4",
         "typescript": "^3.9.2"
     },
     "dependencies": {

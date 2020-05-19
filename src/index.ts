@@ -11,10 +11,24 @@ import {
     savePrivateKey,
     isCertificateValid,
     createCertificate,
+    ltcCertOptions,
 } from './util'
 
-import {ltcOptions} from './types'
-
+type ltcOptions = {
+    path: string
+    ca: {
+        filename: string
+        keySize: ltcCertOptions['keySize']
+        validity: ltcCertOptions['validity']
+        saveToDisc: boolean
+        passphrase?: string
+    }
+    cert: {
+        filename: string
+        keySize: ltcCertOptions['keySize']
+        validity: ltcCertOptions['validity']
+    }
+}
 
 const USER_NAME = userInfo().username
 
@@ -177,7 +191,4 @@ class LocalTrustChain {
     }
 }
 
-export function init(options?: Partial<ltcOptions>){
-    const {pem} = new LocalTrustChain(options)
-    return pem
-}
+export = (options?: Partial<ltcOptions>) => (new LocalTrustChain(options)).pem

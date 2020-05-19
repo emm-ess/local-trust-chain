@@ -2,8 +2,6 @@ import fs from 'fs'
 import {parse, format, ParsedPath} from 'path'
 import {pki, util, random} from 'node-forge'
 
-import {ltcOptions} from '../types'
-
 const EXT_CERT = '.crt'
 const EXT_KEY = '.key'
 
@@ -13,7 +11,13 @@ function createDirectory(path: ParsedPath){
     }
 }
 
-export function getPaths({path, ca, cert}: ltcOptions){
+type getPathOptions = {
+    path: string
+    ca: {filename: string}
+    cert: {filename: string}
+}
+
+export function getPaths({path, ca, cert}: getPathOptions){
     if (!path.endsWith('/')) {
         path += '/'
     }
