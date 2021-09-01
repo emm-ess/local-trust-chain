@@ -10,8 +10,23 @@ module.exports = {
     ],
     extends: [
         'eslint:recommended',
-        'plugin:@typescript-eslint/eslint-recommended',
+        'standard',
         'plugin:@typescript-eslint/recommended',
+        'plugin:@typescript-eslint/recommended-requiring-type-checking',
+
+        // code-smell-detection / code-quality
+        'plugin:unicorn/recommended',
+        'plugin:sonarjs/recommended',
+
+        // imports & import-sorting
+        'plugin:import/errors',
+        'plugin:import/warnings',
+        'plugin:import/typescript',
+
+        // misc
+        'plugin:eslint-comments/recommended',
+        'plugin:json/recommended',
+        'plugin:compat/recommended',
     ],
     rules: {
         'indent': ['error', 4, {
@@ -47,15 +62,24 @@ module.exports = {
             mode: 'minimum',
         }],
         'space-in-brackets': ['off'],
-        'object-curly-spacing': ['off'],
         'object-property-newline': ['error', {
             allowAllPropertiesOnSameLine: true,
         }],
+        semi: [
+            'error',
+            'never',
+            {
+                beforeStatementContinuationChars: 'always',
+            },
+        ],
+        'multiline-ternary': ['warn', 'always'],
+        'operator-linebreak': ['warn', 'before'],
+        quotes: ['error', 'single'],
+        'quote-props': ['error', 'as-needed'],
+        'object-curly-spacing': ['error', 'never'],
+        'arrow-parens': ['error', 'always'],
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/array-type': 'off',
-        // arghs those python developer
-        'camelcase': 'off',
-        '@typescript-eslint/camelcase': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/explicit-member-accessibility': 'off',
         '@typescript-eslint/no-use-before-define': 'off',
@@ -66,6 +90,18 @@ module.exports = {
         '@typescript-eslint/no-inferrable-types': ['error', {
             ignoreParameters: true,
         }],
+        '@typescript-eslint/consistent-type-imports': [
+            'error',
+            {
+                prefer: 'type-imports',
+            },
+        ],
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+
+        // import sorting
+        'sort-import': 'off',
+        'import/order': 'off',
+        'simple-import-sort/imports': 'error',
+        'simple-import-sort/exports': 'error',
     },
 };
