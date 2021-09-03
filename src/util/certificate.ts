@@ -1,4 +1,5 @@
-import {pki, md} from 'node-forge'
+import {md, pki} from 'node-forge'
+
 import {randomSerialNumber} from './files'
 
 export type ltcCertOptions = {
@@ -10,7 +11,7 @@ export type ltcCertOptions = {
     extensions: any[]
 }
 
-export function isCertificateValid({validity}: pki.Certificate): boolean{
+export function isCertificateValid({validity}: pki.Certificate): boolean {
     // TODO:
     // . check if maybe new validity duration setting invalidates certificate
     const now = new Date()
@@ -24,7 +25,7 @@ export function isCertificateValid({validity}: pki.Certificate): boolean{
 export function createCertificate(options: ltcCertOptions): {
     cert: pki.Certificate
     keys: pki.KeyPair
-}{
+} {
     const keys = pki.rsa.generateKeyPair(options.keySize)
     const cert = pki.createCertificate()
     cert.publicKey = keys.publicKey

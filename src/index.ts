@@ -1,17 +1,16 @@
-import {userInfo, homedir} from 'os'
-
-import {pki} from 'node-forge'
 import internalIp from 'internal-ip'
+import {pki} from 'node-forge'
+import {homedir, userInfo} from 'os'
 
+import type {ltcCertOptions} from './util'
 import {
-    getPaths,
-    loadCertificate,
-    saveCertificate,
-    loadPrivateKey,
-    savePrivateKey,
-    isCertificateValid,
     createCertificate,
-    ltcCertOptions,
+    getPaths,
+    isCertificateValid,
+    loadCertificate,
+    loadPrivateKey,
+    saveCertificate,
+    savePrivateKey,
 } from './util'
 
 type ltcOptions = {
@@ -87,7 +86,7 @@ const EXTENSIONS_CERT = [
     },
 ]
 
-function getOptions(options: Partial<ltcOptions>): ltcOptions{
+function getOptions(options: Partial<ltcOptions>): ltcOptions {
     const result = {...DEFAULT_OPTIONS, ...options}
     result.ca = {...DEFAULT_OPTIONS.ca, ...result.ca}
     return result
@@ -101,37 +100,37 @@ class LocalTrustChain {
     certCrt: ReturnType<typeof loadCertificate>
     certKey: ReturnType<typeof loadPrivateKey>
 
-    constructor(options?: Partial<ltcOptions>){
+    constructor(options?: Partial<ltcOptions>) {
         this.settings = getOptions(options)
         this.paths = getPaths(this.settings)
         this.loadFiles()
         this.createCertificates()
     }
 
-    private loadFiles(){
+    private loadFiles(): void {
         this.caCrt = loadCertificate(this.paths.caCrt)
         this.caKey = loadPrivateKey(this.paths.caKey, this.settings.ca.passphrase)
         this.certCrt = loadCertificate(this.paths.certCrt)
         this.certKey = loadPrivateKey(this.paths.certKey)
     }
 
-    private createCertificates(){
+    private createCertificates(): void {
         this.newCaCertificateNeeded && this.createCaCertificate()
         this.newLocalCertificateNeeded && this.createLocalCertificate()
     }
 
-    private get newCaCertificateNeeded(): boolean{
+    private get newCaCertificateNeeded(): boolean {
         return !(this.caCrt && isCertificateValid(this.caCrt))
     }
 
-    private get newLocalCertificateNeeded(): boolean{
+    private get newLocalCertificateNeeded(): boolean {
         // TODO:
         // . check subjectAltName
         return !(this.certCrt && isCertificateValid(this.certCrt))
     }
 
-    private createCaCertificate(): void{
-        const {keySize, validity} = this.settings.ca
+    private createCaCertificate(): void {
+        const {keySize, validity, passphrase} = this.settings.ca
         const {cert, keys} = createCertificate({
             subject: ATTRS_CA,
             issuer: ATTRS_CA,
@@ -144,19 +143,21 @@ class LocalTrustChain {
         this.caKey = keys.privateKey
 
         saveCertificate(this.paths.caCrt, cert)
-        savePrivateKey(this.paths.caKey, keys.privateKey, this.settings.ca.passphrase)
+        savePrivateKey(this.paths.caKey, keys.privateKey, passphrase)
     }
 
-    private createLocalCertificate(): void{
+    private createLocalCertificate(): void {
         const {keySize, validity} = this.settings.ca
+        const keyIdentifier = pki.getPublicKeyFingerprint(this.caCrt.publicKey, {type: 'RSAPublicKey'}).getBytes()
         const {cert, keys} = createCertificate({
             subject: ATTRS_CERT,
-            issuer: this.caCrt.subject.attributes,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            issuer: this.caCrt.issuer.attributes,
             extensions: [
                 ...EXTENSIONS_CERT,
                 {
                     name: 'authorityKeyIdentifier',
-                    keyIdentifier: (this.caCrt as any).generateSubjectKeyIdentifier().getBytes(),
+                    keyIdentifier,
                 },
                 {
                     name: 'subjectAltName',
@@ -182,7 +183,7 @@ class LocalTrustChain {
         key: pki.PEM
         cert: pki.PEM
         ca: pki.PEM
-        }{
+        } {
         return {
             cert: pki.certificateToPem(this.certCrt),
             key: pki.privateKeyToPem(this.certKey),
@@ -191,4 +192,4 @@ class LocalTrustChain {
     }
 }
 
-export = (options?: Partial<ltcOptions>) => (new LocalTrustChain(options)).pem
+export = (options?: Partial<ltcOptions>): (typeof LocalTrustChain.prototype)['pem'] => (new LocalTrustChain(options)).pem
