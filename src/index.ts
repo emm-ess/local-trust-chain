@@ -1,4 +1,3 @@
-import internalIp from 'internal-ip'
 import {pki} from 'node-forge'
 import {homedir, userInfo} from 'os'
 
@@ -12,6 +11,7 @@ import {
     saveCertificate,
     savePrivateKey,
 } from './util'
+import {getIPsAsAltNames} from './util/ip'
 
 type ltcOptions = {
     path: string
@@ -163,8 +163,7 @@ class LocalTrustChain {
                     name: 'subjectAltName',
                     altNames: [
                         {type: 2, value: 'localhost'},
-                        {type: 7, ip: '127.0.0.1'},
-                        {type: 7, ip: internalIp.v4.sync()},
+                        ...getIPsAsAltNames(),
                     ],
                 },
             ],

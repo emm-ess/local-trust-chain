@@ -12,7 +12,7 @@
     "compilerOptions": {
         "baseUrl": ".",
         "outDir": "./dist",
-        "target": "es6",
+        "target": "es2019",
         "module": "commonjs",
         "moduleResolution": "node",
         "esModuleInterop": true,
@@ -25,8 +25,7 @@
         "noEmitOnError": true,
         "noImplicitAny": true,
         "lib": [
-            "es5",
-            "es2015.promise"
+            "es2020"
         ],
         "paths": {
             "*": [
