@@ -1,6 +1,6 @@
 {
     "name": "local-trust-chain",
-    "version": "0.0.3",
+    "version": "0.1.0",
     "description": "Generate SSL/TLS certificates for local SSL development",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
