@@ -14,7 +14,7 @@
         "prebuild": "rimraf dist",
         "build": "tsc",
         "prepare": "husky install",
-        "semantic-release": "semantic-release --no-ci"
+        "semantic-release": "HUSKY=0 semantic-release --no-ci"
     },
     "author": {
         "name": "Marten Schälicke",
