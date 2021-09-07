@@ -1,4 +1,5 @@
 module.exports = {
+    repositoryUrl: 'git@github.com:emm-ess/local-trust-chain.git',
     branches: [{name: 'main'}],
     plugins: [
         // determine release version
