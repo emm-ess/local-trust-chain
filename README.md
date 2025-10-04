@@ -22,7 +22,7 @@ These are all options with their default value.
 ```javascript
 const options = {
     // Path where root-certificate is stored.
-    path: '~/.local-trust-chain/'
+    path: '~/.local-trust-chain/',
     // settings for the "root" certificate aka certificate authorization
     ca: {
         // the filename without extension
@@ -35,13 +35,13 @@ const options = {
         saveToDisc: true,
         // optional the private key can be stored with a passphrase
         passphrase: undefined,
-    }
+    },
     cert: {
         // key can be either 2048 or 4096
         keySize: 2048,
         // duration of validity in days
         validity: 730,
-    }
+    },
 };
 ```
 

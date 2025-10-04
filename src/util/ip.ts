@@ -1,4 +1,4 @@
-import os from 'os'
+import os from 'node:os'
 
 export function getIPs(): string[] {
     const interfaces = os.networkInterfaces()

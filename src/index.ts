@@ -1,5 +1,6 @@
+import {homedir, userInfo} from 'node:os'
+
 import {pki} from 'node-forge'
-import {homedir, userInfo} from 'os'
 
 import type {ltcCertOptions} from './util'
 import {
@@ -151,7 +152,6 @@ class LocalTrustChain {
         const keyIdentifier = pki.getPublicKeyFingerprint(this.caCrt.publicKey, {type: 'RSAPublicKey'}).getBytes()
         const {cert, keys} = createCertificate({
             subject: ATTRS_CERT,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             issuer: this.caCrt.issuer.attributes,
             extensions: [
                 ...EXTENSIONS_CERT,
@@ -174,15 +174,17 @@ class LocalTrustChain {
 
         this.certCrt = cert
         this.certKey = keys.privateKey
+        /* eslint-disable sonarjs/no-commented-code */
         // saveCertificate(this.paths.certCrt, cert)
         // savePrivateKey(this.paths.certKey, keys.privateKey)
+        /* eslint-enable sonarjs/no-commented-code */
     }
 
     get pem(): {
         key: pki.PEM
         cert: pki.PEM
         ca: pki.PEM
-        } {
+    } {
         return {
             cert: pki.certificateToPem(this.certCrt),
             key: pki.privateKeyToPem(this.certKey),

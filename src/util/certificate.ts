@@ -6,7 +6,7 @@ export type ltcCertOptions = {
     subject: pki.CertificateField[]
     issuer: pki.CertificateField[]
     keySize: 2048 | 4096
-    signingKey?: pki.PrivateKey
+    signingKey?: pki.rsa.PrivateKey
     validity: number
     extensions: any[]
 }
@@ -24,7 +24,7 @@ export function isCertificateValid({validity}: pki.Certificate): boolean {
 
 export function createCertificate(options: ltcCertOptions): {
     cert: pki.Certificate
-    keys: pki.KeyPair
+    keys: pki.rsa.KeyPair
 } {
     const keys = pki.rsa.generateKeyPair(options.keySize)
     const cert = pki.createCertificate()

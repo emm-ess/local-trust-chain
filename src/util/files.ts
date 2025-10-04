@@ -1,6 +1,5 @@
 import fs from 'fs'
 import {pki, random, util} from 'node-forge'
-// eslint-disable-next-line unicorn/import-style
 import type {ParsedPath} from 'path'
 import path from 'path'
 
@@ -19,7 +18,7 @@ type getPathOptions = {
     cert: {filename: string}
 }
 
-type Paths = Record<`${'ca'|'cert'}${'Crt'|'Key'}`, ParsedPath>
+type Paths = Record<`${'ca' | 'cert'}${'Crt' | 'Key'}`, ParsedPath>
 export function getPaths(pathOptions: getPathOptions): Paths {
     let {path: directory, ca, cert} = pathOptions
     if (!directory.endsWith('/')) {
@@ -35,14 +34,14 @@ export function getPaths(pathOptions: getPathOptions): Paths {
     }
 }
 
-export function savePrivateKey(directory: ParsedPath, privateKey: pki.PrivateKey, passphrase?: string): void {
+export function savePrivateKey(directory: ParsedPath, privateKey: pki.rsa.PrivateKey, passphrase?: string): void {
     const pem = passphrase
         ? pki.encryptRsaPrivateKey(privateKey, passphrase)
         : pki.privateKeyToPem(privateKey)
     createDirectory(directory)
     fs.writeFileSync(path.format(directory), pem, {encoding: 'utf8'})
 }
-export function loadPrivateKey(directory: ParsedPath, passphrase?: string): pki.PrivateKey | undefined {
+export function loadPrivateKey(directory: ParsedPath, passphrase?: string): pki.rsa.PrivateKey | undefined {
     const filePath = path.format(directory)
     if (!fs.existsSync(filePath)) {
         return
